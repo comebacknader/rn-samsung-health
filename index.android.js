@@ -94,8 +94,6 @@ class RNSamsungHealth {
     );
   }
 
-
-
   getBloodPressure(options, callback) {
     let startDate = options.startDate != undefined ? options.startDate : (new Date()).setHours(0,0,0,0);
     let endDate = options.endDate != undefined ? options.endDate : (new Date()).valueOf();
@@ -127,6 +125,19 @@ class RNSamsungHealth {
     let endDate = options.endDate != undefined ? options.endDate : (new Date()).valueOf();
 
     samsungHealth.readCholesterol(startDate, endDate,
+      (msg) => { callback(msg, false); },
+      (res) => {
+        callback(false, res);
+      }
+    );
+  }
+
+  getBloodGlucose(options, callback) {
+
+    let startDate = options.startDate != undefined ? options.startDate : (new Date()).setHours(0,0,0,0);
+    let endDate = options.endDate != undefined ? options.endDate : (new Date()).valueOf();
+
+    samsungHealth.readBloodGlucose(startDate, endDate,
       (msg) => { callback(msg, false); },
       (res) => {
         callback(false, res);

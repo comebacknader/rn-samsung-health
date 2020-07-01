@@ -415,4 +415,31 @@ public class SamsungHealthModule extends ReactContextBaseJavaModule implements
         }
     }
 
+    @ReactMethod
+    public void readBloodGlucose(double startDate, double endDate, Callback error, Callback success) {
+        HealthDataResolver resolver = new HealthDataResolver(mStore, null);
+        Filter filter = Filter.and(
+            Filter.greaterThanEquals(HealthConstants.BloodGlucose.START_TIME, (long)startDate),
+            Filter.lessThanEquals(HealthConstants.BloodGlucose.START_TIME, (long)endDate)
+        );
+        HealthDataResolver.ReadRequest request = new ReadRequest.Builder()
+                .setDataType(HealthConstants.BloodGlucose.HEALTH_DATA_TYPE)
+                .setProperties(new String[]{
+                        HealthConstants.BloodGlucose.GLUCOSE,
+                        HealthConstants.BloodGlucose.START_TIME,
+                        HealthConstants.BloodGlucose.TIME_OFFSET, 
+                        HealthConstants.BloodGlucose.DEVICE_UUID
+                })
+                .setFilter(filter)
+                .build();
+
+        try {
+            resolver.read(request).setResultListener(new HealthDataResultListener(this, error, success));
+        } catch (Exception e) {
+            Log.e(REACT_MODULE, e.getClass().getName() + " - " + e.getMessage());
+            Log.e(REACT_MODULE, "Getting Blood Glucose fails.");
+            error.invoke("Getting Blood Glucose fails.");
+        }
+    }
+
 }
